@@ -11,10 +11,14 @@ import android.os.CountDownTimer
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
 import kotlin.math.roundToInt
+import android.os.SystemClock
+
 
 class SleepTimerService : Service() {
 
-    private val EXTEND_TIME = 5
+    private val EXTEND_TIME_IN_MINUTES = 5
+    private val VOLUME_ADJUST_SPEED_IN_MS = 2000L
+
     private val NOTIFICATION_ID = 15
 
     private lateinit var notificationHelper : NotificationHelper
@@ -55,7 +59,7 @@ class SleepTimerService : Service() {
         running = true
         startForeground(NOTIFICATION_ID, notificationHelper.getNotification())
 
-        var timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
+        val timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
 
         notificationHelper.notify(NOTIFICATION_ID, "Going to sleep in $timerValueInMinutes")
 
@@ -69,8 +73,12 @@ class SleepTimerService : Service() {
             }
 
             override fun onFinish() {
+                notificationHelper.notify(NOTIFICATION_ID, "Going to sleep now")
+                val originalVolumeIndex = getMediaVolume()
+                lowerMediaVolumeGradually()
                 stopPlayback()
                 goToHomeScreen()
+                setMediaVolume(originalVolumeIndex)
                 stopTimerService()
             }
         }.start()
@@ -78,7 +86,7 @@ class SleepTimerService : Service() {
 
     fun extendTimer(){
         if (countDownTimer != null) countDownTimer!!.cancel()
-        startTimer(timeLeft + EXTEND_TIME)
+        startTimer(timeLeft + EXTEND_TIME_IN_MINUTES)
     }
 
     fun stopTimerService(){
@@ -87,6 +95,27 @@ class SleepTimerService : Service() {
         stopForeground(true)
         sendTimerFinishedBroadcast()
         stopSelf()
+    }
+
+    fun lowerMediaVolumeGradually(){
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        while (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0){
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_LOWER,
+                    AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
+            SystemClock.sleep(VOLUME_ADJUST_SPEED_IN_MS)
+        }
+    }
+
+    fun getMediaVolume(): Int{
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+    }
+
+    fun setMediaVolume(volumeIndex: Int){
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeIndex,
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
     }
 
     fun stopPlayback(){
