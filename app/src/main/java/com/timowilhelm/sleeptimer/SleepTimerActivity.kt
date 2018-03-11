@@ -16,12 +16,12 @@ class SleepTimerActivity : AppCompatActivity() {
     var myService: SleepTimerService? = null
     var isBound = false
 
-    lateinit var timerPicker: NumberPicker
+    private lateinit var timerPicker: NumberPicker
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
 
 
-    val broadCastReceiver = object : BroadcastReceiver() {
+    private val broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
             if(intent?.action == "BROADCAST_TIMER_CHANGED"){
                 when (intent.getStringExtra("state")){
@@ -61,9 +61,9 @@ class SleepTimerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sleep_timer)
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         bindService(serviceToStart, myConnection, Context.BIND_AUTO_CREATE)
-        this.startButton = findViewById<Button>(R.id.startButton)
-        this.stopButton = findViewById<Button>(R.id.stopButton)
-        this.timerPicker = findViewById<NumberPicker>(R.id.timer)
+        this.startButton = findViewById(R.id.startButton)
+        this.stopButton = findViewById(R.id.stopButton)
+        this.timerPicker = findViewById(R.id.timer)
         this.timerPicker.minValue = 1
         this.timerPicker.maxValue = 60
         this.timerPicker.wrapSelectorWheel = false
@@ -82,7 +82,7 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     fun startTimer(view: View) {
-        var timerValueInMinutes = this.timerPicker.value
+        val timerValueInMinutes = this.timerPicker.value
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         startService(serviceToStart)
         myService?.startTimer(timerValueInMinutes)
@@ -102,15 +102,15 @@ class SleepTimerActivity : AppCompatActivity() {
         updateUiTimerStopped()
     }
 
-    fun updateUiTimerRunning(){
-        startButton.setVisibility( View.GONE );
-        stopButton.setVisibility( View.VISIBLE );
+    private fun updateUiTimerRunning(){
+        startButton.visibility = View.GONE
+        stopButton.visibility = View.VISIBLE
         timerPicker.isEnabled = false
     }
 
-    fun updateUiTimerStopped(){
-        startButton.setVisibility( View.VISIBLE );
-        stopButton.setVisibility( View.GONE );
+    private fun updateUiTimerStopped(){
+        startButton.visibility = View.VISIBLE
+        stopButton.visibility = View.GONE
         timerPicker.isEnabled = true
     }
 }

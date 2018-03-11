@@ -10,9 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.support.v4.app.NotificationCompat
 
-/**
- * Created by DeChill on 10.03.2018.
- */
+
 /**
  * Helper class to manage notification channels, and create notifications.
  */
@@ -22,13 +20,13 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
-    val extendIntent = Intent(this, SleepTimerService::class.java)
+    private val extendIntent = Intent(this, SleepTimerService::class.java)
             .putExtra("action", "extend")
-    val pendingExtendIntent = PendingIntent.getService(this, 1, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    private val pendingExtendIntent = PendingIntent.getService(this, 1, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-    val stopIntent = Intent(this, SleepTimerService::class.java)
+    private val stopIntent = Intent(this, SleepTimerService::class.java)
             .putExtra("action", "stop")
-    val pendingStopIntent = PendingIntent.getService(this, 2, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    private val pendingStopIntent = PendingIntent.getService(this, 2, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     private val notificationBuilder: NotificationCompat.Builder by lazy {
         NotificationCompat.Builder(this, "sleepTimer")
@@ -54,7 +52,6 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
 
         // Submit the notification channel object to the notification manager
          notificationManager.createNotificationChannel(sleepTimerChannel)
-
     }
 
     fun getNotification():Notification{
@@ -71,7 +68,7 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
     }
 
     private val smallIcon: Int
-        get() = android.R.drawable.stat_notify_chat
+        get() = R.drawable.ic_stat_sleeptimer
 
 
 }

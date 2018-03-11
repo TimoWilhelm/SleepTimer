@@ -84,7 +84,7 @@ class SleepTimerService : Service() {
         }.start()
     }
 
-    fun extendTimer(){
+    private fun extendTimer(){
         if (countDownTimer != null) countDownTimer!!.cancel()
         startTimer(timeLeft + EXTEND_TIME_IN_MINUTES)
     }
@@ -150,7 +150,7 @@ class SleepTimerService : Service() {
                 .sendBroadcast(timerUpdateBroadcast)
     }
 
-    fun sendTimerFinishedBroadcast(){
+    private fun sendTimerFinishedBroadcast(){
         val timerFinishedBroadcast = Intent("BROADCAST_TIMER_CHANGED")
                 .putExtra("state", "finished")
         LocalBroadcastManager.getInstance(this@SleepTimerService)
