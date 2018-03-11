@@ -8,11 +8,6 @@ import android.support.v4.content.LocalBroadcastManager
 import android.widget.NumberPicker
 import android.view.View
 import android.widget.Button
-import android.util.Log
-import com.timowilhelm.sleeptimer.R.id.startButton
-import com.timowilhelm.sleeptimer.R.id.stopButton
-import junit.runner.Version.id
-
 
 class SleepTimerActivity : AppCompatActivity() {
 
@@ -53,10 +48,8 @@ class SleepTimerActivity : AppCompatActivity() {
 
     fun updateUiAfterBinding(){
         if(myService!!.running){
-            this.timerPicker.value = myService!!.timeLeft
-            startButton.setVisibility( View.GONE );
-            stopButton.setVisibility( View.VISIBLE );
-            timerPicker.isEnabled = false
+            handleTimerUpdate(myService!!.timeLeft)
+            updateUiTimerRunning()
         }else{
             this.timerPicker.value = this.initialTimerValue
         }
@@ -67,7 +60,6 @@ class SleepTimerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sleep_timer)
         val serviceToStart = Intent(this, SleepTimerService::class.java)
-        startService(serviceToStart)
         bindService(serviceToStart, myConnection, Context.BIND_AUTO_CREATE)
         this.startButton = findViewById<Button>(R.id.startButton)
         this.stopButton = findViewById<Button>(R.id.stopButton)
@@ -91,17 +83,15 @@ class SleepTimerActivity : AppCompatActivity() {
 
     fun startTimer(view: View) {
         var timerValueInMinutes = this.timerPicker.value
+        val serviceToStart = Intent(this, SleepTimerService::class.java)
+        startService(serviceToStart)
         myService?.startTimer(timerValueInMinutes)
-        startButton.setVisibility( View.GONE );
-        stopButton.setVisibility( View.VISIBLE );
-        timerPicker.isEnabled = false
+        updateUiTimerRunning()
     }
 
     fun stopTimer(view: View) {
         myService?.stopTimerService()
-        startButton.setVisibility( View.VISIBLE );
-        stopButton.setVisibility( View.GONE );
-        timerPicker.isEnabled = true
+        updateUiTimerStopped()
     }
 
     fun handleTimerUpdate(timeLeft:Int){
@@ -109,6 +99,16 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     fun handleTimerFinished(){
+        updateUiTimerStopped()
+    }
+
+    fun updateUiTimerRunning(){
+        startButton.setVisibility( View.GONE );
+        stopButton.setVisibility( View.VISIBLE );
+        timerPicker.isEnabled = false
+    }
+
+    fun updateUiTimerStopped(){
         startButton.setVisibility( View.VISIBLE );
         stopButton.setVisibility( View.GONE );
         timerPicker.isEnabled = true

@@ -10,12 +10,12 @@ import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
-import kotlin.concurrent.timer
 import kotlin.math.roundToInt
 
 class SleepTimerService : Service() {
 
-    val EXTEND_TIME = 5
+    private val EXTEND_TIME = 5
+    private val NOTIFICATION_ID = 15
 
     private lateinit var notificationHelper : NotificationHelper
     private var countDownTimer: CountDownTimer? = null
@@ -52,46 +52,28 @@ class SleepTimerService : Service() {
     }
 
     fun startTimer(timerValueInMinutes: Int){
-        startForeground(1, notificationHelper.getNotification())
+        running = true
+        startForeground(NOTIFICATION_ID, notificationHelper.getNotification())
+
         var timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
-        notificationHelper.notify(1, "Going to sleep in $timerValueInMinutes")
+
+        notificationHelper.notify(NOTIFICATION_ID, "Going to sleep in $timerValueInMinutes")
+
         countDownTimer = object : CountDownTimer(timerValueInMs, 60000) {
+
             override fun onTick(millisUntilFinished: Long) {
                 timeLeft = (millisUntilFinished / 60.0 / 1000.0).roundToInt()
-                notificationHelper.notify(1, "Going to sleep in $timeLeft minutes")
+                notificationHelper.notify(NOTIFICATION_ID, "Going to sleep in $timeLeft minutes")
 
-                val timerUpdateBroadcast = Intent("BROADCAST_TIMER_CHANGED")
-                        .putExtra("state", "update")
-                        .putExtra("timeLeft", timeLeft)
-                LocalBroadcastManager.getInstance(this@SleepTimerService)
-                        .sendBroadcast(timerUpdateBroadcast)
+                sendTimerUpdateBroadcast()
             }
-            override fun onFinish() {
-                // Stop Playback
-                val audioManager  = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                val playbackAttributes = AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build()
-                val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                        .setAudioAttributes(playbackAttributes)
-                        .build()
-                val res = audioManager.requestAudioFocus(focusRequest)
-                if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
-                    //ERROR
-                } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    //Good
-                }
-                // Go to home screen
-                val startMain = Intent(Intent.ACTION_MAIN)
-                startMain.addCategory(Intent.CATEGORY_HOME)
-                startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(startMain)
 
+            override fun onFinish() {
+                stopPlayback()
+                goToHomeScreen()
                 stopTimerService()
             }
         }.start()
-        running = true
     }
 
     fun extendTimer(){
@@ -100,16 +82,49 @@ class SleepTimerService : Service() {
     }
 
     fun stopTimerService(){
-        if (countDownTimer != null) countDownTimer!!.cancel()
         running = false
-
+        if (countDownTimer != null) countDownTimer!!.cancel()
         stopForeground(true)
+        sendTimerFinishedBroadcast()
+        stopSelf()
+    }
 
+    fun stopPlayback(){
+        val audioManager  = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val playbackAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
+        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes)
+                .build()
+        val res = audioManager.requestAudioFocus(focusRequest)
+        if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+            //ERROR
+        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            //Good
+        }
+    }
+
+    fun goToHomeScreen(){
+        val startMain = Intent(Intent.ACTION_MAIN)
+        startMain.addCategory(Intent.CATEGORY_HOME)
+        startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(startMain)
+    }
+
+    fun sendTimerUpdateBroadcast(){
+        val timerUpdateBroadcast = Intent("BROADCAST_TIMER_CHANGED")
+                .putExtra("state", "update")
+                .putExtra("timeLeft", timeLeft)
+        LocalBroadcastManager.getInstance(this@SleepTimerService)
+                .sendBroadcast(timerUpdateBroadcast)
+    }
+
+    fun sendTimerFinishedBroadcast(){
         val timerFinishedBroadcast = Intent("BROADCAST_TIMER_CHANGED")
                 .putExtra("state", "finished")
         LocalBroadcastManager.getInstance(this@SleepTimerService)
                 .sendBroadcast(timerFinishedBroadcast)
-
-        stopSelf()
     }
 }

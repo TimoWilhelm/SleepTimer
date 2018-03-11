@@ -37,6 +37,8 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setDefaults(0)
+                .setSound(null)
                 .addAction(android.R.drawable.btn_plus, "Extend", pendingExtendIntent)
                 .addAction(android.R.drawable.ic_delete, "Stop", pendingStopIntent)
     }
