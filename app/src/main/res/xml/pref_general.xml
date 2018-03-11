@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="extend_time_preference"
+        android:title="Extend Time"
+        android:summary="%s"
+        android:defaultValue="5"
+        android:entries="@array/extendOptions"
+        android:entryValues="@array/extendOptionsValues"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="turn_off_screen"
+        android:summary="Requires device administrator"
+        android:title="Turn off screen">
+    </SwitchPreference>
+
+</PreferenceScreen>

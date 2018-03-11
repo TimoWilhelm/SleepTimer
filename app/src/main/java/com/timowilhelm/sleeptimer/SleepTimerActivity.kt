@@ -8,13 +8,18 @@ import android.support.v4.content.LocalBroadcastManager
 import android.widget.NumberPicker
 import android.view.View
 import android.widget.Button
+import android.app.admin.DevicePolicyManager
+import android.content.Intent
+import android.content.ComponentName
+import android.view.Menu
+import android.view.MenuItem
 
 class SleepTimerActivity : AppCompatActivity() {
 
     private var initialTimerValue = 5
 
-    var myService: SleepTimerService? = null
-    var isBound = false
+    private var myService: SleepTimerService? = null
+    private var isBound = false
 
     private lateinit var timerPicker: NumberPicker
     private lateinit var startButton: Button
@@ -46,7 +51,7 @@ class SleepTimerActivity : AppCompatActivity() {
         }
     }
 
-    fun updateUiAfterBinding(){
+    private fun updateUiAfterBinding(){
         if(myService!!.running){
             handleTimerUpdate(myService!!.timeLeft)
             updateUiTimerRunning()
@@ -81,8 +86,29 @@ class SleepTimerActivity : AppCompatActivity() {
                 .unregisterReceiver(broadCastReceiver)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     fun startTimer(view: View) {
         val timerValueInMinutes = this.timerPicker.value
+
+        //askForDeviceAdmin()
+
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         startService(serviceToStart)
         myService?.startTimer(timerValueInMinutes)
@@ -94,11 +120,11 @@ class SleepTimerActivity : AppCompatActivity() {
         updateUiTimerStopped()
     }
 
-    fun handleTimerUpdate(timeLeft:Int){
+    private fun handleTimerUpdate(timeLeft:Int){
         this.timerPicker.value = timeLeft
     }
 
-    fun handleTimerFinished(){
+    private fun handleTimerFinished(){
         updateUiTimerStopped()
     }
 

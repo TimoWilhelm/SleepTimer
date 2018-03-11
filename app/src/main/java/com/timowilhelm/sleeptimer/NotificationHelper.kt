@@ -28,6 +28,9 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
             .putExtra("action", "stop")
     private val pendingStopIntent = PendingIntent.getService(this, 2, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+    private val contentIntent = PendingIntent.getActivity(this, 0,
+            Intent(this, SleepTimerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+
     private val notificationBuilder: NotificationCompat.Builder by lazy {
         NotificationCompat.Builder(this, "sleepTimer")
                 .setSmallIcon(smallIcon)
@@ -37,6 +40,7 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
                 .setOnlyAlertOnce(true)
                 .setDefaults(0)
                 .setSound(null)
+                .setContentIntent(contentIntent)
                 .addAction(android.R.drawable.btn_plus, "Extend", pendingExtendIntent)
                 .addAction(android.R.drawable.ic_delete, "Stop", pendingStopIntent)
     }
