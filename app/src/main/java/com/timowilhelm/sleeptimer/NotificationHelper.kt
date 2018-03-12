@@ -8,41 +8,47 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Color
-import android.support.v4.app.NotificationCompat
+import android.graphics.drawable.Icon
 
 
 /**
  * Helper class to manage notification channels, and create notifications.
  */
-internal class NotificationHelper (context: Context) : ContextWrapper(context) {
+internal class NotificationHelper(context: Context) : ContextWrapper(context) {
 
     private val notificationManager: NotificationManager by lazy {
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
-    private val extendIntent = Intent(this, SleepTimerService::class.java)
-            .putExtra("action", "extend")
-    private val pendingExtendIntent = PendingIntent.getService(this, 1, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-    private val stopIntent = Intent(this, SleepTimerService::class.java)
-            .putExtra("action", "stop")
-    private val pendingStopIntent = PendingIntent.getService(this, 2, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    private val extendAction = Notification.Action.Builder(Icon.createWithResource(this,
+            android.R.drawable.ic_menu_add), "Extend",
+            PendingIntent.getService(this, 1,
+                    Intent(this, SleepTimerService::class.java)
+                            .putExtra("action", "extend"),
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+    ).build()
+
+    private val stopAction = Notification.Action.Builder(Icon.createWithResource(this,
+            android.R.drawable.ic_menu_delete), "Stop",
+            PendingIntent.getService(this, 2,
+                    Intent(this, SleepTimerService::class.java)
+                            .putExtra("action", "stop"),
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+    ).build()
 
     private val contentIntent = PendingIntent.getActivity(this, 0,
-            Intent(this, SleepTimerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+            Intent(this, SleepTimerActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT)
 
-    private val notificationBuilder: NotificationCompat.Builder by lazy {
-        NotificationCompat.Builder(this, "sleepTimer")
+    private val notificationBuilder: Notification.Builder by lazy {
+        Notification.Builder(this, "sleepTimer")
                 .setSmallIcon(smallIcon)
                 .setContentTitle("Sleep Timer")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .setDefaults(0)
-                .setSound(null)
                 .setContentIntent(contentIntent)
-                .addAction(android.R.drawable.btn_plus, "Extend", pendingExtendIntent)
-                .addAction(android.R.drawable.ic_delete, "Stop", pendingStopIntent)
+                .setActions(extendAction, stopAction)
     }
 
     init {
@@ -55,10 +61,10 @@ internal class NotificationHelper (context: Context) : ContextWrapper(context) {
         sleepTimerChannel.lightColor = Color.GREEN
 
         // Submit the notification channel object to the notification manager
-         notificationManager.createNotificationChannel(sleepTimerChannel)
+        notificationManager.createNotificationChannel(sleepTimerChannel)
     }
 
-    fun getNotification():Notification{
+    fun getNotification(): Notification {
         return this.notificationBuilder.build()
     }
 
