@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v14.preference.SwitchPreference
+import android.support.v4.app.DialogFragment
 import android.support.v7.preference.Preference
 import android.util.Log
 
@@ -38,5 +39,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivityForResult(intent, 0)
         }
         return policyManager.isAdminActive(adminReceiver)
+    }
+
+    override fun onDisplayPreferenceDialog(preference: Preference) {
+        var dialogFragment: DialogFragment? = null
+        if (preference is NumberPickerPreference) {
+            dialogFragment = NumberPickerPreferenceDialogFragmentCompat
+                    .newInstance(preference.key)
+        }
+        if (dialogFragment != null) {
+            dialogFragment!!.setTargetFragment(this, 0)
+            dialogFragment!!.show(this.fragmentManager,
+                    "android.support.v7.preference" + ".PreferenceFragment.DIALOG")
+        } else {
+            super.onDisplayPreferenceDialog(preference)
+        }
     }
 }

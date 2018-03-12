@@ -41,7 +41,7 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
             Intent(this, SleepTimerActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT)
 
-    private val notificationBuilder: Notification.Builder by lazy {
+    val notificationBuilder: Notification.Builder by lazy {
         Notification.Builder(this, "sleepTimer")
                 .setSmallIcon(smallIcon)
                 .setContentTitle("Sleep Timer")
@@ -64,9 +64,6 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
         notificationManager.createNotificationChannel(sleepTimerChannel)
     }
 
-    fun getNotification(): Notification {
-        return this.notificationBuilder.build()
-    }
 
     fun notify(id: Int, contentText: String) {
         this.notificationBuilder.setContentText(contentText)

@@ -18,8 +18,6 @@ import android.support.v7.preference.PreferenceManager
 import android.util.Log
 
 
-
-
 class SleepTimerService : Service() {
 
     private val VOLUME_ADJUST_SPEED_IN_MS = 2000L
@@ -27,7 +25,7 @@ class SleepTimerService : Service() {
 
     private val NOTIFICATION_ID = 15
 
-    private lateinit var notificationHelper : NotificationHelper
+    private lateinit var notificationHelper: NotificationHelper
     private var countDownTimer: CountDownTimer? = null
     var timeLeft = 0
     var running = false
@@ -35,24 +33,25 @@ class SleepTimerService : Service() {
     private val myBinder = MyLocalBinder()
 
     inner class MyLocalBinder : Binder() {
-        fun getService() : SleepTimerService? {
+        fun getService(): SleepTimerService? {
             return this@SleepTimerService
         }
 
     }
+
     override fun onBind(intent: Intent): IBinder? {
         return myBinder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.getStringExtra("action")){
+        when (intent?.getStringExtra("action")) {
             "extend" -> extendTimer()
             "stop" -> stopTimerService()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onCreate(){
+    override fun onCreate() {
         notificationHelper = NotificationHelper(this)
     }
 
@@ -61,19 +60,21 @@ class SleepTimerService : Service() {
         notificationHelper.cancel(1)
     }
 
-    fun startTimer(timerValueInMinutes: Int){
+    fun startTimer(timerValueInMinutes: Int) {
         running = true
-        startForeground(NOTIFICATION_ID, notificationHelper.getNotification())
+        startForeground(NOTIFICATION_ID, notificationHelper.notificationBuilder.build())
 
         val timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
 
-        notificationHelper.notify(NOTIFICATION_ID, "Going to sleep in $timerValueInMinutes")
+        notificationHelper.notify(NOTIFICATION_ID,
+                "Going to sleep in $timerValueInMinutes")
 
         countDownTimer = object : CountDownTimer(timerValueInMs, 60000) {
 
             override fun onTick(millisUntilFinished: Long) {
                 timeLeft = (millisUntilFinished / 60.0 / 1000.0).roundToInt()
-                notificationHelper.notify(NOTIFICATION_ID, "Going to sleep in $timeLeft minutes")
+                notificationHelper.notify(NOTIFICATION_ID,
+                        "Going to sleep in $timeLeft minutes")
 
                 sendTimerUpdateBroadcast()
             }
@@ -85,21 +86,26 @@ class SleepTimerService : Service() {
                 stopPlayback()
                 goToHomeScreen()
                 setMediaVolume(originalVolumeIndex)
-                val turnOffScreen = PreferenceManager.getDefaultSharedPreferences(this@SleepTimerService).getBoolean("turn_off_screen", false)
-                if(turnOffScreen) turnOffScreen()
+                val turnOffScreen = PreferenceManager
+                        .getDefaultSharedPreferences(this@SleepTimerService)
+                        .getBoolean("turn_off_screen", false)
+                if (turnOffScreen) turnOffScreen()
                 stopTimerService()
             }
         }.start()
     }
 
-    private fun extendTimer(){
-        val extendTime = PreferenceManager.getDefaultSharedPreferences(this).getString("extend_time_preference", "5").toInt()
-        Log.i("asd", "et: $extendTime")
+    private fun extendTimer() {
+        val extendTime = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt("extend_time_pref", R.integer.extend_time_pref_default)
+        var newTime = timeLeft + extendTime
+        val maxTimerValue = resources.getInteger(R.integer.max_timer_value)
+        if(newTime > maxTimerValue) newTime = maxTimerValue
         if (countDownTimer != null) countDownTimer!!.cancel()
-        startTimer(timeLeft + extendTime)
+        startTimer(newTime)
     }
 
-    fun stopTimerService(){
+    fun stopTimerService() {
         running = false
         if (countDownTimer != null) countDownTimer!!.cancel()
         stopForeground(true)
@@ -107,9 +113,9 @@ class SleepTimerService : Service() {
         stopSelf()
     }
 
-    private fun lowerMediaVolumeGradually(){
+    private fun lowerMediaVolumeGradually() {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        while (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0){
+        while (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != 0) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                     AudioManager.ADJUST_LOWER,
                     AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
@@ -117,19 +123,19 @@ class SleepTimerService : Service() {
         }
     }
 
-    private fun getMediaVolume(): Int{
+    private fun getMediaVolume(): Int {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     }
 
-    private fun setMediaVolume(volumeIndex: Int){
+    private fun setMediaVolume(volumeIndex: Int) {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeIndex,
                 AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
     }
 
-    private fun stopPlayback(){
-        val audioManager  = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private fun stopPlayback() {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val playbackAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -143,7 +149,7 @@ class SleepTimerService : Service() {
         }
     }
 
-    private fun goToHomeScreen(){
+    private fun goToHomeScreen() {
         val startMain = Intent(Intent.ACTION_MAIN)
         startMain.addCategory(Intent.CATEGORY_HOME)
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -162,7 +168,7 @@ class SleepTimerService : Service() {
         }
     }
 
-    private fun sendTimerUpdateBroadcast(){
+    private fun sendTimerUpdateBroadcast() {
         val timerUpdateBroadcast = Intent("BROADCAST_TIMER_CHANGED")
                 .putExtra("state", "update")
                 .putExtra("timeLeft", timeLeft)
@@ -170,7 +176,7 @@ class SleepTimerService : Service() {
                 .sendBroadcast(timerUpdateBroadcast)
     }
 
-    private fun sendTimerFinishedBroadcast(){
+    private fun sendTimerFinishedBroadcast() {
         val timerFinishedBroadcast = Intent("BROADCAST_TIMER_CHANGED")
                 .putExtra("state", "finished")
         LocalBroadcastManager.getInstance(this@SleepTimerService)
