@@ -8,29 +8,45 @@ import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v14.preference.SwitchPreference
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
+import android.support.v7.preference.Preference.OnPreferenceClickListener
 import android.util.Log
+import android.view.LayoutInflater
+import android.webkit.WebView
+
+
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
-    lateinit var turnOffScreenPreference : SwitchPreference
+    lateinit var turnOffScreenPreference: SwitchPreference
+    lateinit var licencePreference: Preference
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_general, rootKey)
+
         turnOffScreenPreference = findPreference("turn_off_screen") as SwitchPreference
-        turnOffScreenPreference.onPreferenceChangeListener = listener
+        turnOffScreenPreference.onPreferenceChangeListener = Preference
+                .OnPreferenceChangeListener { _, newValue ->
+                    askForDeviceAdmin(newValue as Boolean)
+                }
+
+        licencePreference = findPreference("openSourceLicenses") as Preference
+        licencePreference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+            run {
+                displayLicensesDialogFragment()
+                true
+            }
+        }
     }
 
-    var listener: Preference.OnPreferenceChangeListener = Preference.OnPreferenceChangeListener {
-        preference, newValue -> askForDeviceAdmin(newValue as Boolean)
-    }
 
-    private fun askForDeviceAdmin(newValue: Boolean): Boolean{
-        if(!newValue) return true
+    private fun askForDeviceAdmin(newValue: Boolean): Boolean {
+        if (!newValue) return true
         val policyManager = activity.getSystemService(Context.DEVICE_POLICY_SERVICE)
                 as DevicePolicyManager
         val adminReceiver = ComponentName(activity.applicationContext,
                 SleepTimerAdminReceiver::class.java)
-        if(!policyManager.isAdminActive(adminReceiver)){
+        if (!policyManager.isAdminActive(adminReceiver)) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver)
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
@@ -54,5 +70,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
+    }
+
+    private fun displayLicensesDialogFragment() {
+        val dialog = LicensesDialogFragment.newInstance()
+        dialog.show(fragmentManager, "LicensesDialog")
     }
 }

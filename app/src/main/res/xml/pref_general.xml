@@ -2,8 +2,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="Settings">
-
-
         <com.timowilhelm.sleeptimer.NumberPickerPreference
             android:key="default_time_pref"
             android:title="Default Time"
@@ -35,8 +33,17 @@
     <PreferenceCategory android:title="About">
         <Preference
             android:key="openSourceLicenses"
+            android:title="@string/openSourceLicenses"
+            android:summary="@string/openSourceLicensesSummary">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.timowilhelm.sleeptimer"
+                android:targetClass="com.timowilhelm.sleeptimer.LicensesDialogFragment" />
+        </Preference>
+        <Preference
+            android:key="openSourceLicenses"
             android:title="@string/buildVersion"
-            android:summary="@string/versionName"/>
+            android:summary="@string/versionName" />
     </PreferenceCategory>
 
 </PreferenceScreen>
