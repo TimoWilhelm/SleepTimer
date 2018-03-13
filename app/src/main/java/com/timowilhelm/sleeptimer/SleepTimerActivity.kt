@@ -60,7 +60,7 @@ class SleepTimerActivity : AppCompatActivity() {
             updateUiTimerRunning()
         } else {
             this.seekArc.progress = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getInt("default_time_pref", R.integer.default_time_pref_default)
+                    .getInt("default_time_pref", resources.getInteger(R.integer.default_time_pref_default))
         }
     }
 

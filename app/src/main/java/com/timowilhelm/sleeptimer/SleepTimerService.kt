@@ -95,7 +95,7 @@ class SleepTimerService : Service() {
 
     fun extendTimer() {
         val extendTime = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt("extend_time_pref", R.integer.extend_time_pref_default)
+                .getInt("extend_time_pref", resources.getInteger(R.integer.extend_time_pref_default))
         var newTime = timeLeft + extendTime
         val maxTimerValue = resources.getInteger(R.integer.max_timer_value)
         if(newTime > maxTimerValue) newTime = maxTimerValue
