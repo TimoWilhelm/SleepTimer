@@ -2,7 +2,9 @@ package android.support.v7.preference
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import com.timowilhelm.preferencecompatextensions.R
 
 
@@ -16,6 +18,7 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAt
     var minValue = 0
     var maxValue = 0
     var wrapSelectorWheel = false
+    var subtitle : String = ""
 
     private val dialogLayoutResId = R.layout.pref_dialog_number
 
@@ -29,6 +32,7 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAt
         minValue = ta.getInt(R.styleable.NumberPickerPreference_minValue, minValue)
         maxValue = ta.getInt(R.styleable.NumberPickerPreference_maxValue, maxValue)
         wrapSelectorWheel = ta.getBoolean(R.styleable.NumberPickerPreference_wrapSelectorWheel, wrapSelectorWheel)
+        subtitle = ta.getString(R.styleable.NumberPickerPreference_subtitle)
         ta.recycle()
     }
 
@@ -52,9 +56,5 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAt
         } else {
             String.format(summary.toString(), number)
         }
-    }
-
-    fun onUpdateValue() {
-        notifyChanged()
     }
 }

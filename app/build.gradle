@@ -46,5 +46,6 @@ dependencies {
     compile 'com.android.support:preference-v14:27.1.0'
 
     compile 'com.github.Triggertrap:SeekArc:v1.1'
-    compile project(':preferencecompatextensions')
+
+    implementation project(':preferencecompatextensions')
 }

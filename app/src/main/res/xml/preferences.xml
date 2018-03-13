@@ -9,7 +9,8 @@
             android:title="Default Time"
             app:maxValue="@integer/max_timer_value"
             app:minValue="@integer/default_time_pref_min"
-            app:wrapSelectorWheel="false" />
+            app:wrapSelectorWheel="false"
+            app:subtitle="@string/minutes" />
 
         <NumberPickerPreference
             style="@style/AppPreference.DialogPreference"
@@ -19,7 +20,8 @@
             android:title="Extend Time"
             app:maxValue="@integer/extend_time_pref_max"
             app:minValue="@integer/extend_time_pref_min"
-            app:wrapSelectorWheel="false" />
+            app:wrapSelectorWheel="false"
+            app:subtitle="@string/minutes" />
 
         <SwitchPreference
             android:defaultValue="false"

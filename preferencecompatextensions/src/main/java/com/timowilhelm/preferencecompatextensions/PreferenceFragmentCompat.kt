@@ -5,7 +5,12 @@ import android.support.v7.preference.NumberPickerPreference
 import android.support.v7.preference.NumberPickerPreferenceDialogFragmentCompat
 import android.support.v7.preference.Preference
 
+
 abstract class PreferenceFragmentCompat : android.support.v7.preference.PreferenceFragmentCompat() {
+
+    companion object {
+        private const val DIALOG_FRAGMENT_TAG = "android.support.v7.preference" + ".PreferenceFragment.DIALOG"
+    }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         var dialogFragment: DialogFragment? = null
@@ -15,13 +20,11 @@ abstract class PreferenceFragmentCompat : android.support.v7.preference.Preferen
         }
         if (dialogFragment != null) {
             dialogFragment.setTargetFragment(this, 0)
-            dialogFragment.show(fragmentManager,
-                    "android.support.v7.preference" + ".PreferenceFragment.DIALOG")
+            dialogFragment.show(fragmentManager, DIALOG_FRAGMENT_TAG)
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
     }
-
 }
 
 
