@@ -40,6 +40,7 @@
                 android:targetPackage="com.timowilhelm.sleeptimer"
                 android:targetClass="com.timowilhelm.sleeptimer.LicensesDialogFragment" />
         </Preference>
+        <!--suppress AndroidDomInspection -->
         <Preference
             android:key="openSourceLicenses"
             android:title="@string/buildVersion"

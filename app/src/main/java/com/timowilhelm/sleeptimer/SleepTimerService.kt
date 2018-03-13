@@ -1,6 +1,8 @@
 package com.timowilhelm.sleeptimer
 
 import android.app.Service
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
@@ -9,19 +11,15 @@ import android.media.AudioManager
 import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
-import android.support.v4.content.LocalBroadcastManager
-import kotlin.math.roundToInt
 import android.os.SystemClock
-import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.preference.PreferenceManager
-import android.util.Log
+import kotlin.math.roundToInt
 
 
 class SleepTimerService : Service() {
 
     private val VOLUME_ADJUST_SPEED_IN_MS = 2000L
-    private val TURN_SCREEN_OFF = true
 
     private val NOTIFICATION_ID = 15
 
@@ -95,7 +93,7 @@ class SleepTimerService : Service() {
         }.start()
     }
 
-    private fun extendTimer() {
+    fun extendTimer() {
         val extendTime = PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt("extend_time_pref", R.integer.extend_time_pref_default)
         var newTime = timeLeft + extendTime

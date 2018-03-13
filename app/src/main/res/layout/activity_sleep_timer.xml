@@ -9,13 +9,11 @@
     <FrameLayout
         android:id="@+id/seekArcContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="256dp"
+        android:layout_height="256dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="24dp"
         android:layout_weight="1"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,30 +22,30 @@
             android:id="@+id/seekArc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:padding="30dp"
 
             app:arcWidth="8dp"
             app:clockwise="true"
             app:max="@integer/max_timer_value"
-            app:sweepAngle="320"
-            app:startAngle="20"
+            app:progressWidth="8dp"
             app:roundEdges="true"
-            app:progressWidth="8dp" />
+            app:startAngle="20"
+            app:sweepAngle="320" />
 
         <TextView
             android:id="@+id/seekArcProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="0"
+            android:gravity="center"
             android:textSize="40sp" />
     </FrameLayout>
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
-        android:layout_height="51dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -57,10 +55,8 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekArcContainer"
-        app:layout_constraintVertical_bias="0.507" />
+        app:layout_constraintTop_toBottomOf="@+id/seekArcContainer" />
 
     <Button
         android:id="@+id/stopButton"
@@ -75,7 +71,22 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toEndOf="@+id/startButton"
+        app:layout_constraintTop_toBottomOf="@+id/seekArcContainer" />
+
+    <Button
+        android:id="@+id/extendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="extendTimer"
+        android:text="@string/extendButton"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/startButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekArcContainer" />
 </android.support.constraint.ConstraintLayout>

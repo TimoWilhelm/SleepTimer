@@ -1,22 +1,18 @@
 package com.timowilhelm.sleeptimer
 
 import android.content.*
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
-import android.view.View
-import android.widget.Button
-import android.content.Intent
-import android.content.ComponentName
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.PreferenceManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import com.triggertrap.seekarc.SeekArc
 import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
-import kotlinx.android.synthetic.main.activity_sleep_timer.view.*
 
 
 class SleepTimerActivity : AppCompatActivity() {
@@ -29,6 +25,7 @@ class SleepTimerActivity : AppCompatActivity() {
     private lateinit var seekArcProgress: TextView
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
+    private lateinit var extendButton: Button
 
 
     private val broadCastReceiver = object : BroadcastReceiver() {
@@ -75,6 +72,7 @@ class SleepTimerActivity : AppCompatActivity() {
         bindService(serviceToStart, myConnection, Context.BIND_AUTO_CREATE)
         this.startButton = findViewById(R.id.startButton)
         this.stopButton = findViewById(R.id.stopButton)
+        this.extendButton = findViewById(R.id.extendButton)
         this.seekArc = findViewById(R.id.seekArc)
         this.seekArcProgress = findViewById(R.id.seekArcProgress)
         seekArc.setOnSeekArcChangeListener(object : OnSeekArcChangeListener {
@@ -83,7 +81,7 @@ class SleepTimerActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekArc: SeekArc) {}
             override fun onProgressChanged(seekArc: SeekArc, progress: Int,
                                            fromUser: Boolean) {
-                seekArcProgress.text = progress.toString()
+                seekArcProgress.text = String.format("%d \n Minutes", progress)
             }
         })
         LocalBroadcastManager.getInstance(this)
@@ -126,13 +124,16 @@ class SleepTimerActivity : AppCompatActivity() {
         updateUiTimerRunning()
     }
 
+    fun extendTimer(view: View) {
+        myService?.extendTimer()
+    }
+
     fun stopTimer(view: View) {
         myService?.stopTimerService()
         updateUiTimerStopped()
     }
 
     private fun handleTimerUpdate(timeLeft: Int) {
-
         this.seekArc.progress = timeLeft
     }
 
@@ -143,12 +144,14 @@ class SleepTimerActivity : AppCompatActivity() {
     private fun updateUiTimerRunning() {
         startButton.visibility = View.GONE
         stopButton.visibility = View.VISIBLE
+        extendButton.visibility = View.VISIBLE
         seekArc.isEnabled = false
     }
 
     private fun updateUiTimerStopped() {
         startButton.visibility = View.VISIBLE
         stopButton.visibility = View.GONE
+        extendButton.visibility = View.GONE
         seekArc.isEnabled = true
     }
 }

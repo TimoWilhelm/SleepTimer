@@ -1,11 +1,9 @@
 package com.timowilhelm.sleeptimer
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
-import android.content.res.TypedArray
-import android.util.Log
-import kotlin.math.min
 
 
 class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAttr: Int , defStyleRes: Int) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {

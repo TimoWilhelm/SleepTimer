@@ -8,19 +8,16 @@ import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v14.preference.SwitchPreference
 import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.Preference.OnPreferenceClickListener
 import android.util.Log
-import android.view.LayoutInflater
-import android.webkit.WebView
 
 
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
-    lateinit var turnOffScreenPreference: SwitchPreference
-    lateinit var licencePreference: Preference
+    private lateinit var turnOffScreenPreference: SwitchPreference
+    private lateinit var licencePreference: Preference
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_general, rootKey)
 
@@ -42,9 +39,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun askForDeviceAdmin(newValue: Boolean): Boolean {
         if (!newValue) return true
-        val policyManager = activity.getSystemService(Context.DEVICE_POLICY_SERVICE)
+        val policyManager = activity?.getSystemService(Context.DEVICE_POLICY_SERVICE)
                 as DevicePolicyManager
-        val adminReceiver = ComponentName(activity.applicationContext,
+        val adminReceiver = ComponentName(context,
                 SleepTimerAdminReceiver::class.java)
         if (!policyManager.isAdminActive(adminReceiver)) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
@@ -64,8 +61,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     .newInstance(preference.key)
         }
         if (dialogFragment != null) {
-            dialogFragment!!.setTargetFragment(this, 0)
-            dialogFragment!!.show(this.fragmentManager,
+            dialogFragment.setTargetFragment(this, 0)
+            dialogFragment.show(this.fragmentManager,
                     "android.support.v7.preference" + ".PreferenceFragment.DIALOG")
         } else {
             super.onDisplayPreferenceDialog(preference)

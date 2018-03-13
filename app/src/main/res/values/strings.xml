@@ -5,9 +5,10 @@
     <string name="device_admin_description">Turn the screen off</string>
     <string name="admin_receiver_status_enabled">Sleep Timer was added as Device Administrator</string>
     <string name="admin_receiver_status_disabled">Sleep Timer was removed from Device Administrators list</string>
-    <string name="prefs_activate_device_admin">Activate device admin</string>
     <string name="title_activity_settings">Settings</string>
     <string name="openSourceLicenses">Open-source licenses</string>
     <string name="openSourceLicensesSummary">License detail for open source software</string>
     <string name="buildVersion">Build version</string>
+    <string name="settings">Settings</string>
+    <string name="extendButton">Extend</string>
 </resources>
