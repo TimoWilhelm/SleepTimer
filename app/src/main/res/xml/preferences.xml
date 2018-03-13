@@ -1,0 +1,48 @@
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="Settings">
+        <NumberPickerPreference
+            style="@style/AppPreference.DialogPreference"
+            android:defaultValue="@integer/default_time_pref_default"
+            android:key="default_time_pref"
+            android:summary="%s minutes"
+            android:title="Default Time"
+            app:maxValue="@integer/max_timer_value"
+            app:minValue="@integer/default_time_pref_min"
+            app:wrapSelectorWheel="false" />
+
+        <NumberPickerPreference
+            style="@style/AppPreference.DialogPreference"
+            android:defaultValue="@integer/extend_time_pref_default"
+            android:key="extend_time_pref"
+            android:summary="%s minutes"
+            android:title="Extend Time"
+            app:maxValue="@integer/extend_time_pref_max"
+            app:minValue="@integer/extend_time_pref_min"
+            app:wrapSelectorWheel="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="turn_off_screen"
+            android:summary="Requires device administrator"
+            android:title="Turn off screen" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+        <Preference
+            android:key="openSourceLicenses"
+            android:summary="@string/openSourceLicensesSummary"
+            android:title="@string/openSourceLicenses">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.timowilhelm.sleeptimer.LicensesDialogFragment"
+                android:targetPackage="com.timowilhelm.sleeptimer" />
+        </Preference>
+        <!--suppress AndroidDomInspection -->
+        <Preference
+            android:key="openSourceLicenses"
+            android:summary="@string/versionName"
+            android:title="@string/buildVersion" />
+    </PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

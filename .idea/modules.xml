@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SleepTimer.iml" filepath="$PROJECT_DIR$/SleepTimer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" filepath="$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" />
     </modules>
   </component>
 </project>

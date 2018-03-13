@@ -2,7 +2,7 @@
     <string name="app_name">Sleep Timer</string>
     <string name="start_button">Start</string>
     <string name="stop_button">Stop</string>
-    <string name="device_admin_description">Turn the screen off</string>
+    <string name="device_admin_description">Allow Sleep Timer to turn off the screen</string>
     <string name="admin_receiver_status_enabled">Sleep Timer was added as Device Administrator</string>
     <string name="admin_receiver_status_disabled">Sleep Timer was removed from Device Administrators list</string>
     <string name="title_activity_settings">Settings</string>

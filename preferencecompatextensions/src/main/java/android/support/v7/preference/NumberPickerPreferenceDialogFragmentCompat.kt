@@ -1,9 +1,9 @@
-package com.timowilhelm.sleeptimer
+package android.support.v7.preference
 
 import android.widget.NumberPicker
 import android.os.Bundle
-import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
+import com.timowilhelm.preferencecompatextensions.R
 
 
 class NumberPickerPreferenceDialogFragmentCompat : PreferenceDialogFragmentCompat() {
