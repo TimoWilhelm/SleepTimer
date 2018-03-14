@@ -2,9 +2,7 @@ package android.support.v7.preference
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import com.timowilhelm.preferencecompatextensions.R
 
 

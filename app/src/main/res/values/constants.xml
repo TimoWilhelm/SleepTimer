@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="default_time">20</integer>
     <integer name="max_timer_value">60</integer>
-    <integer name="default_time_pref_default">10</integer>
-    <integer name="default_time_pref_min">5</integer>
     <integer name="extend_time_pref_default">10</integer>
     <integer name="extend_time_pref_min">5</integer>
-    <integer name="extend_time_pref_max">20</integer>
+    <integer name="extend_time_pref_max">30</integer>
 </resources>

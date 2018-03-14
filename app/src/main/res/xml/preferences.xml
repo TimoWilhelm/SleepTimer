@@ -3,17 +3,6 @@
     <PreferenceCategory android:title="Settings">
         <NumberPickerPreference
             style="@style/AppPreference.DialogPreference"
-            android:defaultValue="@integer/default_time_pref_default"
-            android:key="default_time_pref"
-            android:summary="%s minutes"
-            android:title="Default Time"
-            app:maxValue="@integer/max_timer_value"
-            app:minValue="@integer/default_time_pref_min"
-            app:wrapSelectorWheel="false"
-            app:subtitle="@string/minutes" />
-
-        <NumberPickerPreference
-            style="@style/AppPreference.DialogPreference"
             android:defaultValue="@integer/extend_time_pref_default"
             android:key="extend_time_pref"
             android:summary="%s minutes"

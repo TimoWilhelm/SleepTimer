@@ -60,7 +60,7 @@ class SleepTimerActivity : AppCompatActivity() {
             updateUiTimerRunning()
         } else {
             this.seekArc.progress = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getInt("default_time_pref", resources.getInteger(R.integer.default_time_pref_default))
+                    .getInt("last_used_time", resources.getInteger(R.integer.default_time))
         }
     }
 
@@ -117,7 +117,8 @@ class SleepTimerActivity : AppCompatActivity() {
 
     fun startTimer(view: View) {
         val timerValueInMinutes = this.seekArc.progress
-
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("last_used_time",
+                timerValueInMinutes).apply()
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         startService(serviceToStart)
         myService?.startTimer(timerValueInMinutes)
