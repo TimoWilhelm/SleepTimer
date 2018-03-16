@@ -107,6 +107,7 @@ class SleepTimerService : Service() {
     }
 
     fun stopTimerService() {
+        lowerMediaVolumeTask?.cancel(true)
         running = false
         if (countDownTimer != null) countDownTimer!!.cancel()
         stopForeground(true)
