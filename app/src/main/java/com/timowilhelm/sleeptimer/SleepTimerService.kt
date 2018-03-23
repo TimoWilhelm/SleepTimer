@@ -102,14 +102,14 @@ class SleepTimerService : Service() {
         var newTime = timeLeft + extendTime
         val maxTimerValue = resources.getInteger(R.integer.max_timer_value)
         if (newTime > maxTimerValue) newTime = maxTimerValue
-        if (countDownTimer != null) countDownTimer!!.cancel()
+        countDownTimer?.cancel()
         startTimer(newTime)
     }
 
     fun stopTimerService() {
         lowerMediaVolumeTask?.cancel(true)
         running = false
-        if (countDownTimer != null) countDownTimer!!.cancel()
+        countDownTimer?.cancel()
         stopForeground(true)
         sendTimerFinishedBroadcast()
         stopSelf()
