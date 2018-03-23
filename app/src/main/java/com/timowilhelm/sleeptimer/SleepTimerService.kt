@@ -121,10 +121,17 @@ class SleepTimerService : Service() {
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
-        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                .setAudioAttributes(playbackAttributes)
-                .build()
-        val res = audioManager.requestAudioFocus(focusRequest)
+        val res: Int
+        res = if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            audioManager.requestAudioFocus(AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(playbackAttributes)
+                    .build())
+        }else{
+            audioManager.requestAudioFocus(null,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN)
+        }
+
         if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
             //Todo: Throw Error
         }
