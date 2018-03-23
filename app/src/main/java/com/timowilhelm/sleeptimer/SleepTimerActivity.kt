@@ -27,6 +27,14 @@ class SleepTimerActivity : AppCompatActivity() {
     private lateinit var stopButton: Button
     private lateinit var extendButton: Button
 
+    private var lastUsedTimePreference
+        get() = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt("last_used_time", resources.getInteger(R.integer.default_time))
+        set(value) = PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putInt("last_used_time", value)
+                .apply()
+
 
     private val broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
@@ -59,8 +67,7 @@ class SleepTimerActivity : AppCompatActivity() {
             handleTimerUpdate(myService!!.timeLeft)
             updateUiTimerRunning()
         } else {
-            this.seekArc.progress = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getInt("last_used_time", resources.getInteger(R.integer.default_time))
+            this.seekArc.progress = lastUsedTimePreference
         }
     }
 
@@ -117,8 +124,7 @@ class SleepTimerActivity : AppCompatActivity() {
 
     fun startTimer(view: View) {
         val timerValueInMinutes = this.seekArc.progress
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("last_used_time",
-                timerValueInMinutes).apply()
+        lastUsedTimePreference = timerValueInMinutes
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         startService(serviceToStart)
         myService?.startTimer(timerValueInMinutes)
@@ -140,6 +146,7 @@ class SleepTimerActivity : AppCompatActivity() {
 
     private fun handleTimerFinished() {
         updateUiTimerStopped()
+        this.seekArc.progress = lastUsedTimePreference
     }
 
     private fun updateUiTimerRunning() {
