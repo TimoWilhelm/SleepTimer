@@ -127,6 +127,7 @@ class SleepTimerService : Service() {
                     .setAudioAttributes(playbackAttributes)
                     .build())
         }else{
+            @Suppress("DEPRECATION")
             audioManager.requestAudioFocus(null,
                     AudioManager.STREAM_MUSIC,
                     AudioManager.AUDIOFOCUS_GAIN)
