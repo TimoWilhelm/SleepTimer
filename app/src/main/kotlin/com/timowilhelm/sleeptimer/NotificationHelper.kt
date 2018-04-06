@@ -26,14 +26,14 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
     private val extendAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_add, "Extend",
             PendingIntent.getService(this, 1,
                     Intent(this, SleepTimerService::class.java)
-                            .putExtra("action", "extend"),
+                            .setAction(SleepTimerService.ACTION_EXTEND_TIMER),
                     PendingIntent.FLAG_UPDATE_CURRENT)
     ).build()
 
     private val stopAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, "Stop",
             PendingIntent.getService(this, 2,
                     Intent(this, SleepTimerService::class.java)
-                            .putExtra("action", "stop"),
+                            .setAction(SleepTimerService.ACTION_STOP_TIMER),
                     PendingIntent.FLAG_UPDATE_CURRENT)
     ).build()
 

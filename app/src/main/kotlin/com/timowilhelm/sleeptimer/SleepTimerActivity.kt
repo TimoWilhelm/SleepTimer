@@ -13,10 +13,17 @@ import android.widget.Button
 import android.widget.TextView
 import com.triggertrap.seekarc.SeekArc
 import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
+import android.content.IntentFilter
+
+
 
 
 class SleepTimerActivity : AppCompatActivity() {
 
+    companion object Actions {
+        const val ACTION_TIMER_FINISH = "com.timowilhelm.sleeptimer.ACTION_TIMER_FINISH"
+        const val ACTION_TIMER_UPDATE = "com.timowilhelm.sleeptimer.ACTION_TIMER_UPDATE"
+    }
 
     private var myService: SleepTimerService? = null
     private var isBound = false
@@ -38,12 +45,10 @@ class SleepTimerActivity : AppCompatActivity() {
 
     private val broadCastReceiver = object : BroadcastReceiver() {
         override fun onReceive(contxt: Context?, intent: Intent?) {
-            if (intent?.action == "BROADCAST_TIMER_CHANGED") {
-                when (intent.getStringExtra("state")) {
-                    "update" -> handleTimerUpdate(
-                            intent.getIntExtra("timeLeft", 0))
-                    "finished" -> handleTimerFinished()
-                }
+            when (intent?.action) {
+                ACTION_TIMER_FINISH -> handleTimerFinished()
+                ACTION_TIMER_UPDATE -> handleTimerUpdate(
+                        intent.getIntExtra("timeLeft", 0))
             }
         }
     }
@@ -91,8 +96,11 @@ class SleepTimerActivity : AppCompatActivity() {
                 seekArcProgress.text = String.format("%d \n Minutes", progress)
             }
         })
+        val intentFilter = IntentFilter(ACTION_TIMER_FINISH)
+        intentFilter.addAction(ACTION_TIMER_UPDATE)
+
         LocalBroadcastManager.getInstance(this)
-                .registerReceiver(broadCastReceiver, IntentFilter("BROADCAST_TIMER_CHANGED"))
+                .registerReceiver(broadCastReceiver, IntentFilter(intentFilter))
     }
 
     override fun onDestroy() {

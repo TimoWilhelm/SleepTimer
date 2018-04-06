@@ -19,6 +19,11 @@ import kotlin.math.roundToInt
 
 class SleepTimerService : Service() {
 
+    companion object Actions {
+        const val ACTION_EXTEND_TIMER = "com.timowilhelm.sleeptimer.ACTION_EXTEND_TIMER"
+        const val ACTION_STOP_TIMER = "com.timowilhelm.sleeptimer.ACTION_STOP_TIMER"
+    }
+
     private val NOTIFICATION_ID = 15
 
     private lateinit var notificationHelper: NotificationHelper
@@ -40,9 +45,9 @@ class SleepTimerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.getStringExtra("action")) {
-            "extend" -> extendTimer()
-            "stop" -> stopTimerService()
+        when (intent?.action) {
+            ACTION_EXTEND_TIMER -> extendTimer()
+            ACTION_STOP_TIMER -> stopTimerService()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -158,16 +163,14 @@ class SleepTimerService : Service() {
     }
 
     private fun sendTimerUpdateBroadcast() {
-        val timerUpdateBroadcast = Intent("BROADCAST_TIMER_CHANGED")
-                .putExtra("state", "update")
+        val timerUpdateBroadcast = Intent(SleepTimerActivity.ACTION_TIMER_UPDATE)
                 .putExtra("timeLeft", timeLeft)
         LocalBroadcastManager.getInstance(this@SleepTimerService)
                 .sendBroadcast(timerUpdateBroadcast)
     }
 
     private fun sendTimerFinishedBroadcast() {
-        val timerFinishedBroadcast = Intent("BROADCAST_TIMER_CHANGED")
-                .putExtra("state", "finished")
+        val timerFinishedBroadcast = Intent(SleepTimerActivity.ACTION_TIMER_FINISH)
         LocalBroadcastManager.getInstance(this@SleepTimerService)
                 .sendBroadcast(timerFinishedBroadcast)
     }
