@@ -83,7 +83,7 @@ class SleepTimerService : Service() {
                 timeLeft = 0
                 notificationHelper.notify(NOTIFICATION_ID, getString(R.string.notification_message_sleeptimer_finished))
                 lowerMediaVolumeTask = @SuppressLint("StaticFieldLeak")
-                object: LowerMediaVolumeTask(baseContext) {
+                object : LowerMediaVolumeTask(baseContext) {
                     override fun onFinished() {
                         stopPlayback()
                         goToHomeScreen()
@@ -126,11 +126,11 @@ class SleepTimerService : Service() {
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
         val res: Int
-        res = if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+        res = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             audioManager.requestAudioFocus(AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                     .setAudioAttributes(playbackAttributes)
                     .build())
-        }else{
+        } else {
             @Suppress("DEPRECATION")
             audioManager.requestAudioFocus(null,
                     AudioManager.STREAM_MUSIC,

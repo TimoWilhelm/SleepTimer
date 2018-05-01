@@ -10,7 +10,7 @@ class SleepTimerAdminReceiver : DeviceAdminReceiver() {
     override fun onDisabled(context: Context, intent: Intent) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putBoolean(context.getString(R.string.preference_turn_off_screen_key),false)
+                .putBoolean(context.getString(R.string.preference_turn_off_screen_key), false)
                 .apply()
     }
 }

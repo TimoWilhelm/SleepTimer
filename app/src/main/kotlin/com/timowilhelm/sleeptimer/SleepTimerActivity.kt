@@ -13,9 +13,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.triggertrap.seekarc.SeekArc
 import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
-import android.content.IntentFilter
-
-
 
 
 class SleepTimerActivity : AppCompatActivity() {

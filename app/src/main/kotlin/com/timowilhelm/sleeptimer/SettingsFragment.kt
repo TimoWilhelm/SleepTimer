@@ -1,5 +1,6 @@
 package com.timowilhelm.sleeptimer
 
+import android.app.Activity
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -8,9 +9,8 @@ import android.os.Bundle
 import android.support.v14.preference.SwitchPreference
 import android.support.v7.preference.Preference
 import android.support.v7.preference.Preference.OnPreferenceClickListener
-import com.timowilhelm.preferencecompatextensions.PreferenceFragmentCompat
-import android.app.Activity
 import android.support.v7.preference.PreferenceManager
+import com.timowilhelm.preferencecompatextensions.PreferenceFragmentCompat
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -79,6 +79,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Check if setting has been changed by DeviceAdminReceiver and update UI
         (findPreference(getString(R.string.preference_turn_off_screen_key)) as SwitchPreference).isChecked =
                 PreferenceManager.getDefaultSharedPreferences(context)
-                        .getBoolean(getString(R.string.preference_turn_off_screen_key),false)
+                        .getBoolean(getString(R.string.preference_turn_off_screen_key), false)
     }
 }

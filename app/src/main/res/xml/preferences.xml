@@ -31,7 +31,7 @@
         </Preference>
         <!--suppress AndroidDomInspection -->
         <Preference
-            android:key="@string/preference_version_name_key"
+            android:key="@string/preference_build_version_key"
             android:summary="@string/version_name"
             android:title="@string/build_version" />
     </PreferenceCategory>
