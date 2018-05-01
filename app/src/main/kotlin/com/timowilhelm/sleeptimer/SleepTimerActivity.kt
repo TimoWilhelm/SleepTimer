@@ -36,10 +36,10 @@ class SleepTimerActivity : AppCompatActivity() {
 
     private var lastUsedTimePreference
         get() = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt("last_used_time", resources.getInteger(R.integer.default_time))
+                .getInt(getString(R.string.preference_last_used_time_key), resources.getInteger(R.integer.default_time))
         set(value) = PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
-                .putInt("last_used_time", value)
+                .putInt(getString(R.string.preference_last_used_time_key), value)
                 .apply()
 
 
@@ -93,7 +93,7 @@ class SleepTimerActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekArc: SeekArc) {}
             override fun onProgressChanged(seekArc: SeekArc, progress: Int,
                                            fromUser: Boolean) {
-                seekArcProgress.text = String.format("%d \n Minutes", progress)
+                seekArcProgress.text = String.format(getString(R.string.progress_text), progress)
             }
         })
         val intentFilter = IntentFilter(ACTION_TIMER_FINISH)
@@ -104,12 +104,12 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         val serviceToStop = Intent(this, SleepTimerService::class.java)
         if (!myService!!.running) stopService(serviceToStop)
         unbindService(myConnection)
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(broadCastReceiver)
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

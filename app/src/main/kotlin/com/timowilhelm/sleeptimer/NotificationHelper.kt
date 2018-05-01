@@ -23,14 +23,14 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
     }
 
 
-    private val extendAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_add, "Extend",
+    private val extendAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_add, getString(R.string.extend_button),
             PendingIntent.getService(this, 1,
                     Intent(this, SleepTimerService::class.java)
                             .setAction(SleepTimerService.ACTION_EXTEND_TIMER),
                     PendingIntent.FLAG_UPDATE_CURRENT)
     ).build()
 
-    private val stopAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, "Stop",
+    private val stopAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, getString(R.string.stop_button),
             PendingIntent.getService(this, 2,
                     Intent(this, SleepTimerService::class.java)
                             .setAction(SleepTimerService.ACTION_STOP_TIMER),
@@ -42,9 +42,9 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
             PendingIntent.FLAG_UPDATE_CURRENT)
 
     val notificationBuilder: NotificationCompat.Builder by lazy {
-        NotificationCompat.Builder(this, "sleepTimer")
+        NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
                 .setSmallIcon(smallIcon)
-                .setContentTitle("Sleep Timer")
+                .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(contentIntent)
@@ -61,8 +61,8 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val sleepTimerChannel = NotificationChannel(
-                "sleepTimer",
-                "Sleep Timer",
+                getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW)
 
         // Configure the channel's initial settings

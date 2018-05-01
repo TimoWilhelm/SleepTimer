@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <string name="preference_extend_time_key">preference_extend_time</string>
+    <string name="preference_turn_off_screen_key">preference_turn_off_screen</string>
+    <string name="preference_open_source_licenses_key">preference_open_source_licenses</string>
+    <string name="preference_version_name_key">preference_version_name</string>
+    <string name="preference_last_used_time_key">preference_last_used_time</string>
+
+    <string name="notification_channel_id">sleepTimer</string>
+</resources>

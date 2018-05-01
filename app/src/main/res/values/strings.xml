@@ -3,13 +3,32 @@
     <string name="start_button">Start</string>
     <string name="stop_button">Stop</string>
     <string name="device_admin_description">Allow Sleep Timer to turn off the screen</string>
-    <string name="admin_receiver_status_enabled">Sleep Timer was added as Device Administrator</string>
-    <string name="admin_receiver_status_disabled">Sleep Timer was removed from Device Administrators list</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="openSourceLicenses">Open-source licenses</string>
-    <string name="openSourceLicensesSummary">License detail for open source software</string>
-    <string name="buildVersion">Build version</string>
+    <string name="build_version">Build version</string>
     <string name="settings">Settings</string>
-    <string name="extendButton">Extend</string>
+    <string name="extend_button">Extend</string>
     <string name="minutes">Minutes</string>
+    <string name="device_admin_explanation">Need device admin permission to turn off the screen</string>
+    <string name="progress_text">"%d \n Minutes"</string>
+
+    <!--preferences-->
+    <string name="preferencecategory_about">Extend Time</string>
+
+    <string name="preference_extend_time_title">Extend Time</string>
+    <string name="preference_extend_time_summary">%s minutes</string>
+
+    <string name="preference_turn_off_screen_title">Turn off screen</string>
+    <string name="preference_turn_off_screen_summary">Requires device administrator</string>
+
+    <string name="preference_open_source_licenses_title">Open-source licenses</string>
+    <string name="preference_open_source_licenses_summary">License detail for open source software</string>
+
+
+    <!--notifications-->
+    <string name="notification_channel_name">Sleep Timer</string>
+    <string name="notification_title">Sleep Timer</string>
+    <string name="notification_message_sleeptimer_update">Going to sleep in {0} minutes</string>
+    <string name="notification_message_sleeptimer_finished">Going to sleep now</string>
+
+
 </resources>

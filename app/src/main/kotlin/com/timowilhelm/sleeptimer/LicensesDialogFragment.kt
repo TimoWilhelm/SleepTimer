@@ -16,7 +16,7 @@ class LicensesDialogFragment : DialogFragment() {
                 .from(activity).inflate(R.layout.dialog_licenses, null) as WebView
         view.loadUrl("file:///android_asset/open_source_licenses.html")
         return AlertDialog.Builder(context as Context, R.style.Theme_AppCompat_Light_Dialog_Alert)
-                .setTitle(getString(R.string.openSourceLicenses))
+                .setTitle(getString(R.string.preference_open_source_licenses_title))
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .create()

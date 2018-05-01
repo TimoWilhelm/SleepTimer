@@ -2,7 +2,7 @@
 <resources>
     <integer name="default_time">20</integer>
     <integer name="max_timer_value">60</integer>
-    <integer name="extend_time_pref_default">10</integer>
-    <integer name="extend_time_pref_min">5</integer>
-    <integer name="extend_time_pref_max">30</integer>
+    <integer name="preference_extend_time_default">10</integer>
+    <integer name="preference_extend_time_min">5</integer>
+    <integer name="preference_extend_time_max">30</integer>
 </resources>

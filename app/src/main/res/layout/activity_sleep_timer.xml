@@ -93,7 +93,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="extendTimer"
-        android:text="@string/extendButton"
+        android:text="@string/extend_button"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/startButton"

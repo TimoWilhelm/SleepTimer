@@ -3,27 +3,27 @@
     <PreferenceCategory android:title="Settings">
         <NumberPickerPreference
             style="@style/AppPreference.DialogPreference"
-            android:defaultValue="@integer/extend_time_pref_default"
-            android:key="extend_time_pref"
-            android:summary="%s minutes"
-            android:title="Extend Time"
-            app:maxValue="@integer/extend_time_pref_max"
-            app:minValue="@integer/extend_time_pref_min"
+            android:defaultValue="@integer/preference_extend_time_default"
+            android:key="@string/preference_extend_time_key"
+            android:summary="@string/preference_extend_time_summary"
+            android:title="@string/preference_extend_time_title"
+            app:maxValue="@integer/preference_extend_time_max"
+            app:minValue="@integer/preference_extend_time_min"
             app:wrapSelectorWheel="false"
             app:subtitle="@string/minutes" />
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="turn_off_screen"
-            android:summary="Requires device administrator"
-            android:title="Turn off screen" />
+            android:key="@string/preference_turn_off_screen_key"
+            android:summary="@string/preference_turn_off_screen_summary"
+            android:title="@string/preference_turn_off_screen_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="About">
+    <PreferenceCategory android:title="@string/preferencecategory_about">
         <Preference
-            android:key="openSourceLicenses"
-            android:summary="@string/openSourceLicensesSummary"
-            android:title="@string/openSourceLicenses">
+            android:key="@string/preference_open_source_licenses_key"
+            android:summary="@string/preference_open_source_licenses_summary"
+            android:title="@string/preference_open_source_licenses_title">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="com.timowilhelm.sleeptimer.LicensesDialogFragment"
@@ -31,9 +31,9 @@
         </Preference>
         <!--suppress AndroidDomInspection -->
         <Preference
-            android:key="openSourceLicenses"
-            android:summary="@string/versionName"
-            android:title="@string/buildVersion" />
+            android:key="@string/preference_version_name_key"
+            android:summary="@string/version_name"
+            android:title="@string/build_version" />
     </PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

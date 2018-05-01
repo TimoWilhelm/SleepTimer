@@ -14,6 +14,7 @@ import android.os.CountDownTimer
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.preference.PreferenceManager
+import java.text.MessageFormat
 import kotlin.math.roundToInt
 
 
@@ -53,12 +54,13 @@ class SleepTimerService : Service() {
     }
 
     override fun onCreate() {
+        super.onCreate()
         notificationHelper = NotificationHelper(this)
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         notificationHelper.cancel(1)
+        super.onDestroy()
     }
 
     fun startTimer(timerValueInMinutes: Int) {
@@ -67,22 +69,19 @@ class SleepTimerService : Service() {
 
         val timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
 
-        notificationHelper.notify(NOTIFICATION_ID,
-                "Going to sleep in $timerValueInMinutes")
-
         countDownTimer = object : CountDownTimer(timerValueInMs, 60000) {
 
             override fun onTick(millisUntilFinished: Long) {
                 timeLeft = (millisUntilFinished / 60.0 / 1000.0).roundToInt()
                 notificationHelper.notify(NOTIFICATION_ID,
-                        "Going to sleep in $timeLeft minutes")
+                        MessageFormat.format(getString(R.string.notification_message_sleeptimer_update), timeLeft))
 
                 sendTimerUpdateBroadcast()
             }
 
             override fun onFinish() {
                 timeLeft = 0
-                notificationHelper.notify(NOTIFICATION_ID, "Going to sleep now")
+                notificationHelper.notify(NOTIFICATION_ID, getString(R.string.notification_message_sleeptimer_finished))
                 lowerMediaVolumeTask = @SuppressLint("StaticFieldLeak")
                 object: LowerMediaVolumeTask(baseContext) {
                     override fun onFinished() {
@@ -90,7 +89,7 @@ class SleepTimerService : Service() {
                         goToHomeScreen()
                         val turnOffScreen = PreferenceManager
                                 .getDefaultSharedPreferences(this@SleepTimerService)
-                                .getBoolean("turn_off_screen", false)
+                                .getBoolean(getString(R.string.preference_turn_off_screen_key), false)
                         if (turnOffScreen) turnOffScreen()
                         stopTimerService()
                     }
@@ -103,7 +102,7 @@ class SleepTimerService : Service() {
     fun extendTimer() {
         lowerMediaVolumeTask?.cancel(true)
         val extendTime = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt("extend_time_pref", resources.getInteger(R.integer.extend_time_pref_default))
+                .getInt(getString(R.string.preference_extend_time_key), resources.getInteger(R.integer.preference_extend_time_default))
         var newTime = timeLeft + extendTime
         val maxTimerValue = resources.getInteger(R.integer.max_timer_value)
         if (newTime > maxTimerValue) newTime = maxTimerValue
