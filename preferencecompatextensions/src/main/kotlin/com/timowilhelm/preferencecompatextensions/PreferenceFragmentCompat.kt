@@ -1,12 +1,12 @@
 package com.timowilhelm.preferencecompatextensions
 
-import android.support.v4.app.DialogFragment
-import android.support.v7.preference.NumberPickerPreference
-import android.support.v7.preference.NumberPickerPreferenceDialogFragmentCompat
-import android.support.v7.preference.Preference
+import androidx.fragment.app.DialogFragment
+import androidx.preference.NumberPickerPreference
+import androidx.preference.NumberPickerPreferenceDialogFragmentCompat
+import androidx.preference.Preference
 
 
-abstract class PreferenceFragmentCompat : android.support.v7.preference.PreferenceFragmentCompat() {
+abstract class PreferenceFragmentCompat : androidx.preference.PreferenceFragmentCompat() {
 
     companion object {
         private const val DIALOG_FRAGMENT_TAG = "android.support.v7.preference" + ".PreferenceFragment.DIALOG"
@@ -20,7 +20,7 @@ abstract class PreferenceFragmentCompat : android.support.v7.preference.Preferen
         }
         if (dialogFragment != null) {
             dialogFragment.setTargetFragment(this, 0)
-            dialogFragment.show(fragmentManager, DIALOG_FRAGMENT_TAG)
+            dialogFragment.show(parentFragmentManager, DIALOG_FRAGMENT_TAG)
         } else {
             super.onDisplayPreferenceDialog(preference)
         }

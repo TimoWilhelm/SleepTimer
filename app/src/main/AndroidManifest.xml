@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.USES_POLICY_FORCE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         tools:replace="android:icon,android:theme"

@@ -1,4 +1,4 @@
-package android.support.v7.preference
+package androidx.preference
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import com.timowilhelm.preferencecompatextensions.R
 
 
-class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAttr: Int , defStyleRes: Int) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
+class NumberPickerPreference(context: Context?, attrs: AttributeSet?) : DialogPreference(context, attrs) {
     var number: Int = 0
         set(value){
             field = value
@@ -21,16 +21,14 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?, defStyleAt
     private val dialogLayoutResId = R.layout.pref_dialog_number
 
     constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, defStyleAttr)
 
     init{
         val ta = context!!.obtainStyledAttributes(
-                attrs, R.styleable.NumberPickerPreference, defStyleAttr, defStyleRes)
+                attrs, R.styleable.NumberPickerPreference)
         minValue = ta.getInt(R.styleable.NumberPickerPreference_minValue, minValue)
         maxValue = ta.getInt(R.styleable.NumberPickerPreference_maxValue, maxValue)
         wrapSelectorWheel = ta.getBoolean(R.styleable.NumberPickerPreference_wrapSelectorWheel, wrapSelectorWheel)
-        subtitle = ta.getString(R.styleable.NumberPickerPreference_subtitle)
+        subtitle = ta.getString(R.styleable.NumberPickerPreference_subtitle).toString()
         ta.recycle()
     }
 

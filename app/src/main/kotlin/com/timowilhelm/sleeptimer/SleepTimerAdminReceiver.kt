@@ -3,7 +3,7 @@ package com.timowilhelm.sleeptimer
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context
 import android.content.Intent
-import android.support.v7.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 class SleepTimerAdminReceiver : DeviceAdminReceiver() {
 

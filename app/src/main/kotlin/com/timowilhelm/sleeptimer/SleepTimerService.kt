@@ -12,8 +12,8 @@ import android.media.AudioManager
 import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.preference.PreferenceManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
 import java.text.MessageFormat
 import kotlin.math.roundToInt
 

@@ -3,9 +3,9 @@ package com.timowilhelm.sleeptimer
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.preference.PreferenceManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View

@@ -6,10 +6,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v14.preference.SwitchPreference
-import android.support.v7.preference.Preference
-import android.support.v7.preference.Preference.OnPreferenceClickListener
-import android.support.v7.preference.PreferenceManager
+import androidx.preference.SwitchPreference
+import androidx.preference.Preference
+import androidx.preference.Preference.OnPreferenceClickListener
+import androidx.preference.PreferenceManager
 import com.timowilhelm.preferencecompatextensions.PreferenceFragmentCompat
 
 
@@ -19,21 +19,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val REQUEST_TURN_OFF_SCREEN = 100
     }
 
-    private lateinit var turnOffScreenPreference: SwitchPreference
-    private lateinit var licencePreference: Preference
+    private var turnOffScreenPreference: SwitchPreference? = null
+    private var licencePreference: Preference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        turnOffScreenPreference = findPreference(getString(R.string.preference_turn_off_screen_key)) as SwitchPreference
-        turnOffScreenPreference.onPreferenceChangeListener = Preference
+        turnOffScreenPreference = findPreference(getString(R.string.preference_turn_off_screen_key))
+        turnOffScreenPreference?.onPreferenceChangeListener = Preference
                 .OnPreferenceChangeListener(fun(_, newValue): Boolean {
                     if (!(newValue as Boolean)) return true
 
                     val policyManager = activity?.getSystemService(Context.DEVICE_POLICY_SERVICE)
                             as DevicePolicyManager
 
-                    val adminReceiver = ComponentName(context, SleepTimerAdminReceiver::class.java)
+                    val adminReceiver = ComponentName(requireContext(), SleepTimerAdminReceiver::class.java)
 
                     if (!policyManager.isAdminActive(adminReceiver)) {
                         askForDeviceAdmin(adminReceiver)
@@ -41,8 +41,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     return policyManager.isAdminActive(adminReceiver)
                 })
 
-        licencePreference = findPreference(getString(R.string.preference_open_source_licenses_key)) as Preference
-        licencePreference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+        licencePreference = findPreference(getString(R.string.preference_open_source_licenses_key))
+        licencePreference?.onPreferenceClickListener = OnPreferenceClickListener { _ ->
             run {
                 displayLicensesDialogFragment()
                 true
@@ -60,7 +60,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun displayLicensesDialogFragment() {
         val dialog = LicensesDialogFragment.newInstance()
-        dialog.show(fragmentManager, "LicensesDialog")
+        dialog.show(parentFragmentManager, "LicensesDialog")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -68,7 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         when (requestCode) {
             REQUEST_TURN_OFF_SCREEN -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    (findPreference(getString(R.string.preference_turn_off_screen_key)) as SwitchPreference).isChecked = true
+                    findPreference<SwitchPreference>(getString(R.string.preference_turn_off_screen_key))?.isChecked = true
                 }
             }
         }
@@ -77,7 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         super.onResume()
         // Check if setting has been changed by DeviceAdminReceiver and update UI
-        (findPreference(getString(R.string.preference_turn_off_screen_key)) as SwitchPreference).isChecked =
+        findPreference<SwitchPreference>(getString(R.string.preference_turn_off_screen_key))?.isChecked =
                 PreferenceManager.getDefaultSharedPreferences(context)
                         .getBoolean(getString(R.string.preference_turn_off_screen_key), false)
     }

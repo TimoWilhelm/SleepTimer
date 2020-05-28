@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SleepTimer.iml" filepath="$PROJECT_DIR$/SleepTimer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" filepath="$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SleepTimer.iml" filepath="$PROJECT_DIR$/SleepTimer.iml" group="SleepTimer" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="SleepTimer/app" />
+      <module fileurl="file://$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" filepath="$PROJECT_DIR$/preferencecompatextensions/preferencecompatextensions.iml" group="SleepTimer/preferencecompatextensions" />
     </modules>
   </component>
 </project>
