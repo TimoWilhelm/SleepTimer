@@ -22,8 +22,7 @@ class SleepTimerActivity : AppCompatActivity() {
         const val ACTION_TIMER_UPDATE = "com.timowilhelm.sleeptimer.ACTION_TIMER_UPDATE"
     }
 
-    private var myService: SleepTimerService? = null
-    private var isBound = false
+    private var sleepTimerService: SleepTimerService? = null
 
     private lateinit var seekArc: SeekArc
     private lateinit var seekArcProgress: TextView
@@ -50,26 +49,28 @@ class SleepTimerActivity : AppCompatActivity() {
         }
     }
 
-    private val myConnection = object : ServiceConnection {
+    private val sleepTimerServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName,
                                         service: IBinder) {
-            val binder = service as SleepTimerService.MyLocalBinder
-            myService = binder.getService()
-            isBound = true
-            updateUiAfterBinding()
+            val binder = service as SleepTimerService.LocalBinder
+            val boundSleepTimerService = binder.getService()
+            if(boundSleepTimerService != null) {
+                sleepTimerService = boundSleepTimerService;
+                updateUiAfterBinding(boundSleepTimerService)
+            }
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            isBound = false
+            sleepTimerService = null;
         }
     }
 
-    private fun updateUiAfterBinding() {
-        if (myService!!.running) {
-            handleTimerUpdate(myService!!.timeLeft)
+    private fun updateUiAfterBinding(sleepTimerService: SleepTimerService) {
+        if (sleepTimerService.running) {
+            handleTimerUpdate(sleepTimerService.timeLeft)
             updateUiTimerRunning()
         } else {
-            this.seekArc.progress = lastUsedTimePreference
+            seekArc.progress = lastUsedTimePreference
         }
     }
 
@@ -78,12 +79,12 @@ class SleepTimerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sleep_timer)
         val serviceToStart = Intent(this, SleepTimerService::class.java)
-        bindService(serviceToStart, myConnection, Context.BIND_AUTO_CREATE)
-        this.startButton = findViewById(R.id.startButton)
-        this.stopButton = findViewById(R.id.stopButton)
-        this.extendButton = findViewById(R.id.extendButton)
-        this.seekArc = findViewById(R.id.seekArc)
-        this.seekArcProgress = findViewById(R.id.seekArcProgress)
+        bindService(serviceToStart, sleepTimerServiceConnection, Context.BIND_AUTO_CREATE)
+        startButton = findViewById(R.id.startButton)
+        stopButton = findViewById(R.id.stopButton)
+        extendButton = findViewById(R.id.extendButton)
+        seekArc = findViewById(R.id.seekArc)
+        seekArcProgress = findViewById(R.id.seekArcProgress)
         seekArc.setOnSeekArcChangeListener(object : OnSeekArcChangeListener {
 
             override fun onStopTrackingTouch(seekArc: SeekArc) {}
@@ -101,9 +102,6 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        val serviceToStop = Intent(this, SleepTimerService::class.java)
-        if (!myService!!.running) stopService(serviceToStop)
-        unbindService(myConnection)
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(broadCastReceiver)
         super.onDestroy()
@@ -128,30 +126,30 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     fun startTimer(view: View) {
-        val timerValueInMinutes = this.seekArc.progress
+        val timerValueInMinutes = seekArc.progress
         lastUsedTimePreference = timerValueInMinutes
         val serviceToStart = Intent(this, SleepTimerService::class.java)
         startService(serviceToStart)
-        myService?.startTimer(timerValueInMinutes)
+        sleepTimerService?.startTimer(timerValueInMinutes)
         updateUiTimerRunning()
     }
 
     fun extendTimer(view: View) {
-        myService?.extendTimer()
+        sleepTimerService?.extendTimer()
     }
 
     fun stopTimer(view: View) {
-        myService?.stopTimerService()
+        sleepTimerService?.stopTimerService()
         updateUiTimerStopped()
     }
 
     private fun handleTimerUpdate(timeLeft: Int) {
-        this.seekArc.progress = timeLeft
+        seekArc.progress = timeLeft
     }
 
     private fun handleTimerFinished() {
         updateUiTimerStopped()
-        this.seekArc.progress = lastUsedTimePreference
+        seekArc.progress = lastUsedTimePreference
     }
 
     private fun updateUiTimerRunning() {

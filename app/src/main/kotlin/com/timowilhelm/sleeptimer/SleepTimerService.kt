@@ -33,9 +33,9 @@ class SleepTimerService : Service() {
     var running = false
     private var lowerMediaVolumeTask: LowerMediaVolumeTask? = null
 
-    private val myBinder = MyLocalBinder()
+    private val myBinder = LocalBinder()
 
-    inner class MyLocalBinder : Binder() {
+    inner class LocalBinder : Binder() {
         fun getService(): SleepTimerService? {
             return this@SleepTimerService
         }
@@ -104,7 +104,7 @@ class SleepTimerService : Service() {
         val extendTime = PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt(getString(R.string.preference_extend_time_key), resources.getInteger(R.integer.preference_extend_time_default))
         var newTime = timeLeft + extendTime
-        val maxTimerValue = resources.getInteger(R.integer.max_timer_value)
+        val maxTimerValue = resources.getInteger(R.integer.timer_value_max)
         if (newTime > maxTimerValue) newTime = maxTimerValue
         countDownTimer?.cancel()
         startTimer(newTime)
