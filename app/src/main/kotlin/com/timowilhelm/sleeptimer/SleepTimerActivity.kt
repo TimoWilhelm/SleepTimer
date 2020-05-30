@@ -125,7 +125,7 @@ class SleepTimerActivity : AppCompatActivity() {
         }
     }
 
-    fun startTimer(view: View) {
+    fun startTimer(@Suppress("UNUSED_PARAMETER")view: View) {
         val timerValueInMinutes = seekArc.progress
         lastUsedTimePreference = timerValueInMinutes
         val serviceToStart = Intent(this, SleepTimerService::class.java)
@@ -134,11 +134,11 @@ class SleepTimerActivity : AppCompatActivity() {
         updateUiTimerRunning()
     }
 
-    fun extendTimer(view: View) {
+    fun extendTimer(@Suppress("UNUSED_PARAMETER")view: View) {
         sleepTimerService?.extendTimer()
     }
 
-    fun stopTimer(view: View) {
+    fun stopTimer(@Suppress("UNUSED_PARAMETER")view: View) {
         sleepTimerService?.stopTimerService()
         updateUiTimerStopped()
     }
