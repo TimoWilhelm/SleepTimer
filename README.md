@@ -3,4 +3,6 @@
 
 After a set amount of time, SleepTimer will fade out and stop any running media playback. If you grant the necessary permissions it can also turn off the device screen.
 
-<img src="./img/SleepTimer.png?raw=true" width="300">
+Light Theme | Dark Theme
+:-:|:-:
+![Screenshot light mode](./img/screenshot_light.png?raw=true) | ![Screenshot dark mode](./img/screenshot_dark.png?raw=true)
