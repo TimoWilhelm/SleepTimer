@@ -46,6 +46,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
+    implementation 'androidx.media:media:1.1.0'
     implementation 'com.github.Triggertrap:SeekArc:v1.1'
     implementation project(':preferencecompatextensions')
 

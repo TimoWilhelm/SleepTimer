@@ -6,13 +6,18 @@ import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Binder
 import android.os.CountDownTimer
 import android.os.IBinder
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
+import androidx.media.AudioManagerCompat.requestAudioFocus
 import androidx.preference.PreferenceManager
 import java.text.MessageFormat
 import kotlin.math.roundToInt
@@ -26,14 +31,14 @@ class SleepTimerService : Service() {
     }
 
     private val NOTIFICATION_ID = 15
-
     private lateinit var notificationHelper: NotificationHelper
+    private lateinit var wakeLock: PowerManager.WakeLock
     private var countDownTimer: CountDownTimer? = null
+    private var lowerMediaVolumeTask: LowerMediaVolumeTask? = null
+    private val myBinder = LocalBinder()
+
     var timeLeft = 0
     var running = false
-    private var lowerMediaVolumeTask: LowerMediaVolumeTask? = null
-
-    private val myBinder = LocalBinder()
 
     inner class LocalBinder : Binder() {
         fun getService(): SleepTimerService? {
@@ -55,16 +60,21 @@ class SleepTimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "com.timowilhelm.sleeptimer::WakeLock")
+        }
         notificationHelper = NotificationHelper(this)
     }
 
     override fun onDestroy() {
         notificationHelper.cancel(1)
+        wakeLock.release()
         super.onDestroy()
     }
 
     fun startTimer(timerValueInMinutes: Int) {
         running = true
+        this.wakeLock.acquire(timerValueInMinutes * 60 * 1000L)
         startForeground(NOTIFICATION_ID, notificationHelper.notificationBuilder.build())
 
         val timerValueInMs = (timerValueInMinutes * 60 * 1000).toLong()
@@ -117,27 +127,25 @@ class SleepTimerService : Service() {
         stopForeground(true)
         sendTimerFinishedBroadcast()
         stopSelf()
+        wakeLock.release()
     }
 
     private fun stopPlayback() {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val playbackAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+        val playbackAttributes = AudioAttributesCompat.Builder()
+                .setUsage(AudioAttributesCompat.USAGE_MEDIA)
+                .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
                 .build()
-        val res: Int
-        res = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            audioManager.requestAudioFocus(AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(playbackAttributes)
-                    .build())
-        } else {
-            @Suppress("DEPRECATION")
-            audioManager.requestAudioFocus(null,
-                    AudioManager.STREAM_MUSIC,
-                    AudioManager.AUDIOFOCUS_GAIN)
-        }
 
-        if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+        val focusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes ?: return)
+                .setWillPauseWhenDucked(false)
+                .setOnAudioFocusChangeListener { _ ->
+                    {}
+                }
+                .build()
+
+        if (requestAudioFocus(audioManager, focusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             //Todo: Throw Error
         }
     }
@@ -146,32 +154,32 @@ class SleepTimerService : Service() {
         val startMain = Intent(Intent.ACTION_MAIN)
         startMain.addCategory(Intent.CATEGORY_HOME)
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(startMain)
+        applicationContext.startActivity(startMain)
     }
 
-    private fun turnOffScreen() {
+    private fun turnOffScreen(): Boolean {
         val policyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         val adminReceiver = ComponentName(this,
                 SleepTimerAdminReceiver::class.java)
         val admin = policyManager.isAdminActive(adminReceiver)
-        if (admin) {
+        return if (admin) {
             policyManager.lockNow()
+            true
         } else {
-            //TODO: Throw Error
+            false
         }
     }
 
     private fun sendTimerUpdateBroadcast() {
         val timerUpdateBroadcast = Intent(SleepTimerActivity.ACTION_TIMER_UPDATE)
                 .putExtra("timeLeft", timeLeft)
-        LocalBroadcastManager.getInstance(this@SleepTimerService)
+        LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(timerUpdateBroadcast)
     }
 
     private fun sendTimerFinishedBroadcast() {
         val timerFinishedBroadcast = Intent(SleepTimerActivity.ACTION_TIMER_FINISH)
-        LocalBroadcastManager.getInstance(this@SleepTimerService)
+        LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(timerFinishedBroadcast)
     }
-
 }

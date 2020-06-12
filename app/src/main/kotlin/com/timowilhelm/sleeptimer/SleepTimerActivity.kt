@@ -1,8 +1,10 @@
 package com.timowilhelm.sleeptimer
 
 import android.content.*
+import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.Settings
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -126,12 +128,18 @@ class SleepTimerActivity : AppCompatActivity() {
     }
 
     fun startTimer(@Suppress("UNUSED_PARAMETER")view: View) {
-        val timerValueInMinutes = seekArc.progress
-        lastUsedTimePreference = timerValueInMinutes
-        val serviceToStart = Intent(this, SleepTimerService::class.java)
-        startService(serviceToStart)
-        sleepTimerService?.startTimer(timerValueInMinutes)
-        updateUiTimerRunning()
+        if(!Settings.canDrawOverlays(this)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName"))
+            startActivity(intent)
+        } else {
+            val timerValueInMinutes = seekArc.progress
+            lastUsedTimePreference = timerValueInMinutes
+            val serviceToStart = Intent(this, SleepTimerService::class.java)
+            startService(serviceToStart)
+            sleepTimerService?.startTimer(timerValueInMinutes)
+            updateUiTimerRunning()
+        }
     }
 
     fun extendTimer(@Suppress("UNUSED_PARAMETER")view: View) {
