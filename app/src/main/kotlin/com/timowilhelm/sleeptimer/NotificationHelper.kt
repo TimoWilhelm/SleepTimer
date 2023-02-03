@@ -27,19 +27,19 @@ internal class NotificationHelper(context: Context) : ContextWrapper(context) {
             PendingIntent.getService(this, 1,
                     Intent(this, SleepTimerService::class.java)
                             .setAction(SleepTimerService.ACTION_EXTEND_TIMER),
-                    PendingIntent.FLAG_UPDATE_CURRENT)
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     ).build()
 
     private val stopAction = NotificationCompat.Action.Builder(android.R.drawable.ic_menu_delete, getString(R.string.stop_button),
             PendingIntent.getService(this, 2,
                     Intent(this, SleepTimerService::class.java)
                             .setAction(SleepTimerService.ACTION_STOP_TIMER),
-                    PendingIntent.FLAG_UPDATE_CURRENT)
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     ).build()
 
     private val contentIntent = PendingIntent.getActivity(this, 0,
             Intent(this, SleepTimerActivity::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
     val notificationBuilder: NotificationCompat.Builder by lazy {
         NotificationCompat.Builder(this, getString(R.string.notification_channel_id))

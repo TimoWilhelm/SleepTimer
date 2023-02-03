@@ -1,10 +1,13 @@
 package com.timowilhelm.sleeptimer
 
+import android.Manifest
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -13,6 +16,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.triggertrap.seekarc.SeekArc
 import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
 
@@ -76,6 +81,14 @@ class SleepTimerActivity : AppCompatActivity() {
         }
     }
 
+    private val notificationPermissionRequestLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.d("RPMT", "Permission granted")
+            } else {
+                Log.d("RPMT", "Permission denied")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +114,10 @@ class SleepTimerActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(broadCastReceiver, IntentFilter(intentFilter))
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED ) {
+            notificationPermissionRequestLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     override fun onDestroy() {
@@ -126,6 +143,7 @@ class SleepTimerActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
     fun startTimer(@Suppress("UNUSED_PARAMETER")view: View) {
         if(!Settings.canDrawOverlays(this)) {

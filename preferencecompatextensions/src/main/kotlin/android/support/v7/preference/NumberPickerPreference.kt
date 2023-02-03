@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import com.timowilhelm.preferencecompatextensions.R
 
 
-class NumberPickerPreference(context: Context?, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+class NumberPickerPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
     var number: Int = 0
         set(value){
             field = value
@@ -20,7 +20,7 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?) : DialogPr
 
     private val dialogLayoutResId = R.layout.pref_dialog_number
 
-    constructor(context: Context?) : this(context, null)
+    constructor(context: Context) : this(context, null)
 
     init{
         val ta = context!!.obtainStyledAttributes(
@@ -32,9 +32,9 @@ class NumberPickerPreference(context: Context?, attrs: AttributeSet?) : DialogPr
         ta.recycle()
     }
 
-    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
         // Default value from attribute. Fallback value is set to 0.
-        return a!!.getInt(index, 0)
+        return a.getInt(index, 0)
     }
 
     override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {

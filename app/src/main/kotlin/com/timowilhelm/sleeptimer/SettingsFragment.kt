@@ -78,7 +78,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onResume()
         // Check if setting has been changed by DeviceAdminReceiver and update UI
         findPreference<SwitchPreference>(getString(R.string.preference_turn_off_screen_key))?.isChecked =
-                PreferenceManager.getDefaultSharedPreferences(context)
+                PreferenceManager.getDefaultSharedPreferences(requireContext())
                         .getBoolean(getString(R.string.preference_turn_off_screen_key), false)
     }
 }
